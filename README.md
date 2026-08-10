@@ -41,30 +41,3 @@ time = (step_time / chef_experience) * order_difficulty
 
 Applied per step. The simulator actually waits that long before moving on — without blocking the main thread.
 
-## 3. Build plan
-
-Each item below is its own PR, with a description and a UML diagram.
-
-**Phase 1 — Research**
-- Native language tools (no libraries) for OOP
-- Native tools for design patterns: Singleton, Decorator, Adapter, MVC, Observer, Builder, Factory, Strategy, DAO
-- Native tools for SOLID
-- Repo setup + review access for `reynoldmorel@gmail.com`
-**Phase 2 — Domain**
-- Entities, **one context per PR** (Product and Customer can't share a PR)
-- Custom dependency injection mechanism — the PR explains why it's needed and what it buys us
-**Phase 3 — Services & Controllers**
-- Services: store the models efficiently. One PR each. Single instance only.
-- Controllers: the bridge between the simulator and the services. One PR each. Single instance only.
-**Phase 4 — Simulation**
-- The simulation module itself
-- The preparation time formula
-- Order history
-## 4. Done when
-
-- An order can be placed and gets a time estimate.
-- Stock is checked correctly, and missing ingredients route to the right state.
-- Each step respects its real duration without freezing the app.
-- The order reaches Completed.
-- Every state change shows up in the history.
-- The OOP tools, patterns, SOLID principles, and the DI mechanism are all in place and documented with UML.
