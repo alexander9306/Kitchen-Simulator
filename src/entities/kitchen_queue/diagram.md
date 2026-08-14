@@ -1,7 +1,5 @@
 # Kitchen queue context
 
-See the full system diagram: [docs/diagram.md](../../../docs/diagram.md)
-
 ```mermaid
 classDiagram
     class KitchenQueue {
