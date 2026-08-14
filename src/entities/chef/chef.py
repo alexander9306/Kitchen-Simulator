@@ -12,10 +12,10 @@ class Chef:
         self.name = name
         self.experience = experience
 
-    def take_order(self, order: "Order") -> None:
+    def take_order(self, order: Order) -> None:
         order.chef_id = self.id
         order.update_status(OrderStatus.IN_PREPARATION)
 
-    def search_for_ingredients(self, order: "Order") -> None:
+    def search_for_ingredients(self, order: Order) -> None:
         order.update_status(OrderStatus.SEARCHING_FOR_INGREDIENTS)
 
