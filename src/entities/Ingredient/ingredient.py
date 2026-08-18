@@ -1,7 +1,8 @@
-import uuid
+from src.entities.entity.entity import Entity
 
-class Ingredient:
-  def __init__(self, name: str, quantityInStock: int, id: str | None = None):
-    self.id = id or str(uuid.uuid4())
+class Ingredient(Entity):
+  def __init__(self, name: str, quantityInStock: int, created_by: str):
+    super().__init__(created_by=created_by)
+
     self.name = name
     self.quantityInStock = quantityInStock

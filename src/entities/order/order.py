@@ -1,31 +1,44 @@
 from __future__ import annotations
 
-import uuid
 from datetime import datetime
-
 
 from src.entities.order.order_item import OrderItem
 from src.entities.order.order_status import OrderStatus
+from src.entities.entity.entity import Entity
+from src.entities.chef.chef import Chef
+from src.entities.customer.customer import Customer
 
-
-class Order:
+class Order(Entity):
     def __init__(
         self,
-        customer_id: str,
+        created_by: str,
+        customer: Customer,
+        chef: Chef | None = None,
         items: list[OrderItem] | None = None,
-        id: list[str] | None = None,
     ) -> None:
-        self.id = id or str(uuid.uuid4())
-        # this will be change for a customer if cx entity is created
-        self.customer_id = customer_id
+        super().__init__(created_by=created_by)
+
+        self.customer = customer
+        self.chef = chef
         self.items: list[OrderItem] = items or []
         self.status = OrderStatus.PENDING
-        self.chef_id: str | None = None
-        self.created_at = datetime.now()
         self.estimated_ready_at: datetime | None = None
 
-    def add_item(self, item: OrderItem) -> None:
+    def set_chef(self, chef: Chef, updated_by: str) -> None:
+        self.touch(updated_by=updated_by)
+        self.chef = chef
+
+    def add_item(self, item: OrderItem, updated_by: str) -> None:
+        self.touch(updated_by=updated_by)
         self.items.append(item)
 
-    def update_status(self, status: OrderStatus) -> None:
+    def update_status(self, status: OrderStatus, updated_by: str) -> None:
+        self.touch(updated_by=updated_by)
         self.status = status
+
+    def take_order(self, taken_by: str) -> None:
+        self.update_status(OrderStatus.IN_PREPARATION, updated_by=taken_by)
+
+    def search_for_ingredients(self, search_by: str) -> None:
+        self.update_status(OrderStatus.SEARCHING_FOR_INGREDIENTS, updated_by=search_by)
+
