@@ -96,9 +96,3 @@ orders.
 - **Ready-time estimate.** `estimated_ready_at` is declared but never set.
   Requirement 9b wants it computed at placement time from the queue — service
   work, since it needs to see other orders.
-
-## Known defect
-
-`order.py:8` imports `src.entities.chef.chef`, which no longer exists. The
-package does not import as a result. `Chef` needs a home before this context
-can run.
