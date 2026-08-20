@@ -14,10 +14,9 @@ classDiagram
         +DateTime estimated_ready_at
         +DateTime created_at
         +String created_by
-        +set_chef(chef: Chef, updated_by: String) void
-        +add_item(item: OrderItem, updated_by: String) void
-        +update_status(status: OrderStatus, updated_by: String) void
-        +take_order(taken_by: String) void
+        +add_item(item: OrderItem) void
+        +update_status(status: OrderStatus) void
+        +take_order() void
         +search_for_ingredients(search_by: String) void
     }
 
@@ -62,9 +61,6 @@ classDiagram
 
 **Order holds object references, not foreign keys.** `customer` and `chef` are
 `Customer` and `Chef` instances rather than `customerId` / `chefId` strings
-
-**Every mutator calls `touch()`** so `updated_at` / `updated_by` stay accurate
-without callers having to remember.
 
 `*--` to `OrderItem` is composition: an order item has no life of its own once
 its order is gone. `-->` to `Customer` is a plain association — customers outlive

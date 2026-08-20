@@ -11,12 +11,15 @@ from src.entities.customer.customer import Customer
 class Order(Entity):
     def __init__(
         self,
+        id: int,
         created_by: str,
+        created_at: datetime,
         customer: Customer,
         chef: Chef | None = None,
         items: list[OrderItem] | None = None,
+
     ) -> None:
-        super().__init__(created_by=created_by)
+        super().__init__(created_by=created_by, id=id, created_at=created_at)
 
         self.customer = customer
         self.chef = chef
@@ -24,21 +27,15 @@ class Order(Entity):
         self.status = OrderStatus.PENDING
         self.estimated_ready_at: datetime | None = None
 
-    def set_chef(self, chef: Chef, updated_by: str) -> None:
-        self.touch(updated_by=updated_by)
-        self.chef = chef
 
-    def add_item(self, item: OrderItem, updated_by: str) -> None:
-        self.touch(updated_by=updated_by)
+    def add_item(self, item: OrderItem) -> None:
         self.items.append(item)
 
-    def update_status(self, status: OrderStatus, updated_by: str) -> None:
-        self.touch(updated_by=updated_by)
+    def update_status(self, status: OrderStatus) -> None:
         self.status = status
 
-    def take_order(self, taken_by: str) -> None:
-        self.update_status(OrderStatus.IN_PREPARATION, updated_by=taken_by)
+    def take_order(self) -> None:
+        self.update_status(OrderStatus.IN_PREPARATION)
 
     def search_for_ingredients(self, search_by: str) -> None:
-        self.update_status(OrderStatus.SEARCHING_FOR_INGREDIENTS, updated_by=search_by)
-
+        self.update_status(OrderStatus.SEARCHING_FOR_INGREDIENTS)
