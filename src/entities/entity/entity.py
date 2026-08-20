@@ -8,7 +8,7 @@ class Entity:
     self.created_at = created_at
 
     self.updated_by = created_by
-    self.updated_at: datetime | None = None
+    self.updated_at: datetime = created_at
 
     self.deleted_at: datetime | None = None
     self.deleted_by: str | None = None
