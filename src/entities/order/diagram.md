@@ -17,7 +17,7 @@ classDiagram
         +add_item(item: OrderItem) void
         +update_status(status: OrderStatus) void
         +take_order() void
-        +search_for_ingredients(search_by: String) void
+        +search_for_ingredients() void
     }
 
     class OrderItem {

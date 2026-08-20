@@ -37,5 +37,5 @@ class Order(Entity):
     def take_order(self) -> None:
         self.update_status(OrderStatus.IN_PREPARATION)
 
-    def search_for_ingredients(self, search_by: str) -> None:
+    def search_for_ingredients(self) -> None:
         self.update_status(OrderStatus.SEARCHING_FOR_INGREDIENTS)
