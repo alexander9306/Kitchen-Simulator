@@ -1,8 +1,16 @@
 from src.entities.entity.entity import Entity
+from datetime import datetime
 
 class Ingredient(Entity):
-  def __init__(self, name: str, quantityInStock: int, created_by: str):
-    super().__init__(created_by=created_by)
+  def __init__(
+    self,
+    id: int,
+    created_by: str,
+    created_at: datetime,
+    name: str,
+    quantityInStock: int
+  ):
+    super().__init__(created_by=created_by, id=id, created_at=created_at)
 
     self.name = name
     self.quantityInStock = quantityInStock
