@@ -13,11 +13,35 @@ classDiagram
     }
 
     class Order {
-        <<external>>
+        +String id
+        +Customer customer
+        +Chef chef
+        +List~OrderItem~ items
+        +OrderStatus status
+        +DateTime estimated_ready_at
+        +DateTime created_at
+        +String created_by
+        +add_item(item: OrderItem) void
+        +update_status(status: OrderStatus) void
+        +take_order() void
+        +search_for_ingredients() void
     }
+
     class OrderItem {
-        <<external>>
+        +String id
+        +Product product
+        +int quantity
+        +String notes
     }
+
+    class OrderStatus {
+        <<enumeration>>
+        PENDING
+        SEARCHING_FOR_INGREDIENTS
+        IN_PREPARATION
+        COMPLETED
+    }
+
     class Ingredient {
         +String name
     }
@@ -48,6 +72,11 @@ classDiagram
     Entity <|-- PreparationStep
     Entity <|-- Ingredient
     Entity <|-- Chef
+    Order "1" *-- "1..*" OrderItem : contiene
+    Order "1" --> "1" OrderStatus : tiene
+    OrderItem "0..*" --> "1" Product : referencia
+    Customer "1" --> "0..*" Order : crea
+    Chef "1" --> "0..*" Order : prepara
 ```
 
 ## Entity
@@ -137,3 +166,17 @@ here.
 
 The person who places orders. A customer knows *who they are*, not how the
 kitchen works.
+
+## Order
+
+What a customer asked for, and how far along it is. `Order` is the entity that
+guards its own status and item list.
+
+### Design notes
+
+**Order holds object references, not foreign keys.** `customer` and `chef` are
+`Customer` and `Chef` instances rather than `customerId` / `chefId` strings
+
+`*--` to `OrderItem` is composition: an order item has no life of its own once
+its order is gone. `-->` to `Customer` is a plain association — customers outlive
+orders.
