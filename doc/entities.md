@@ -1,6 +1,4 @@
-# Entity (base) context
-
-Shared base for every **entity** in the domain: identity plus audit trail
+# Entities
 
 ```mermaid
 classDiagram
@@ -41,8 +39,11 @@ classDiagram
     Entity <|-- Ingredient
 ```
 
-## Design notes
+## Entity
+
+Shared base for every **entity** in the domain: identity plus audit trail
+
+### Design notes
 
 - `id` defaults to a `uuid4` when not supplied, so entities are identifiable
   before they ever reach a service or store.
-
