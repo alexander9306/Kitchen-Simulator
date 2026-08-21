@@ -8,9 +8,7 @@ class Ingredient(Entity):
     created_by: str,
     created_at: datetime,
     name: str,
-    quantityInStock: int
   ):
     super().__init__(created_by=created_by, id=id, created_at=created_at)
 
     self.name = name
-    self.quantityInStock = quantityInStock
