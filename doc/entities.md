@@ -1,23 +1,69 @@
-# Product context
-
-What the customer buys — the menu item. A product knows how hard it is to make
-and which steps produce it; it does not know anything about stock.
+# Entities
 
 ```mermaid
 classDiagram
+    class Entity {
+        +String id
+        +DateTime created_at
+        +String created_by
+        +DateTime updated_at
+        +String updated_by
+        +DateTime deleted_at
+        +String deleted_by
+    }
+
+    class Customer {
+        <<external>>
+    }
+    class Order {
+        <<external>>
+    }
+    class OrderItem {
+        <<external>>
+    }
+    class Ingredient {
+        +String name
+        +int quantity_in_stock
+    }
+
     class Product {
         +String name
         +float difficulty
     }
 
-    class Entity {
-        <<external>>
+    class PreparationStep {
+        +String name
+        +float step_time
     }
 
+    Entity <|-- Customer
+    Entity <|-- Order
+    Entity <|-- OrderItem
     Entity <|-- Product
+    Entity <|-- PreparationStep
+    Entity <|-- Ingredient
 ```
 
-## Design notes
+## Entity
+
+Shared base for every **entity** in the domain: identity plus audit trail
+
+### Design notes
+
+- `id` defaults to a `uuid4` when not supplied, so entities are identifiable
+  before they ever reach a service or store.
+
+## Ingredient
+
+A raw material consumed while preparing a product. An ingredient knows *what it
+is*; how much of it exists is a stock concern.
+
+## Product
+
+What the customer buys — the menu item. A product knows how hard it is to make
+and which steps produce it; it does not know anything about stock.
+
+### Design notes
 
 `difficulty` exists to feed the preparation-time formula of requirement 10:
 
@@ -41,7 +87,7 @@ reading: only ingredients are stocked.
 Composition (`*--`) is used for the step relationship because a `PreparationStep`
 has no meaning outside the product that defines it.
 
-## Pending decisions
+### Pending decisions
 
 - **Items sold ready-made** (a bottled drink, a bag of chips) are both sellable
   and stocked. Current plan: model them as a `Product` with a single ~0-time
@@ -51,3 +97,9 @@ has no meaning outside the product that defines it.
   Difficulty currently lives on `Product`. Confirm whether an order containing
   several products derives its difficulty from them (max? sum? per-item?) or
   whether `Order` carries its own.
+
+## PreparationStep
+
+One step in the recipe for a product ("toast the bread"), with the time it takes
+at baseline. Steps are what make requirement 9d real: the simulator must
+actually wait for each one.
