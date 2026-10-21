@@ -48,12 +48,14 @@ classDiagram
 
     class Product {
         +String name
-        +float difficulty
     }
 
     class PreparationStep {
         +String name
         +float step_time
+        +float difficulty
+        +PreparationStep[] parents
+        +PreparationStep[] children
     }
 
     class Chef {
@@ -95,31 +97,45 @@ is
 
 ## Product
 
-What the customer buys — the menu item. A product knows how hard it is to make
-and which steps produce it; it does not know anything about stock.
+What the customer buys — the menu item. A product knows which steps produce it;
+it does not know anything about stock, and it does not carry a difficulty of its
+own — difficulty belongs to the individual steps.
 
 ### Design notes
 
-`difficulty` exists to feed the preparation-time formula of requirement 10:
-
-```
-step_duration = step.step_time / chef.experience * product.difficulty
-```
-
-It is stored here, on the product, because difficulty is a property of the dish
-itself and is set by the company — not by the customer and not by the chef.
-
 **Product is not Ingredient.** A product is *sold*; an ingredient is *consumed*.
 Nothing stocks a product and nothing orders an ingredient. They look similar
-because both carry `id` and `name`, but merging them would leave `difficulty`
-and `PreparationStep[]` meaningless on a tomato, and `quantity_in_stock`
-meaningless on a hamburger.
+because both carry `id` and `name`, but merging them would leave
+`PreparationStep[]` meaningless on a tomato, and `quantity_in_stock` meaningless
+on a hamburger.
 
 ## PreparationStep
 
 One step in the recipe for a product ("toast the bread"), with the time it takes
-at baseline. Steps are what make requirement 9d real: the simulator must
-actually wait for each one.
+at baseline and how demanding it is. Steps are what make requirement 9d real:
+the simulator must actually wait for each one.
+
+A step also carries the shape of the recipe: `parents` are the steps that must
+finish before it can start, `children` are the steps it unblocks. Together they
+make a recipe a graph rather than a list, which is what lets the simulator tell
+apart the steps that may overlap from the ones that must wait.
+
+### Design notes
+
+`difficulty` feeds the preparation-time formula of requirement 10:
+
+```
+step_duration = step.step_time / chef.experience * step.difficulty
+```
+
+It is stored per step rather than on the product because two steps in the same
+dish are not equally demanding — searing a patty and plating a bun ask different
+things of a chef, and one number on the product cannot express that. `step_time`
+remains the baseline duration; `difficulty` scales it.
+
+Linking, cycle detection and traversal are deliberately absent. The step is
+plain data; the component that builds and walks the graph arrives with the
+business logic.
 
 ## Chef
 
@@ -132,7 +148,7 @@ an order through its states belongs to the order.
 requirement 10:
 
 ```
-step_duration = step.step_time / chef.experience * product.difficulty
+step_duration = step.step_time / chef.experience * step.difficulty
 ```
 
 It divides, so a higher number means a faster chef. This is the only reason the
