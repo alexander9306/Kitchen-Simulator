@@ -10,10 +10,12 @@ class PreparationStep (Entity):
     created_at: datetime,
     name: str,
     step_time: float,
-    depend_on: list[PreparationStep] | None = None
+    difficulty: float
   ):
     super().__init__(created_by=created_by, id=id, created_at=created_at)
 
     self.name = name
     self.step_time = step_time
-    self.depend_on = depend_on
+    self.difficulty = difficulty
+    self.parents: list[PreparationStep] = []
+    self.children: list[PreparationStep] = []
